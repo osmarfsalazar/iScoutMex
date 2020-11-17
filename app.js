@@ -1,3 +1,15 @@
+var firebaseConfig = {
+    apiKey: "AIzaSyCY8ZE1LzKI7FXSwDtEj43mttKNpuhpwOY",
+    authDomain: "gestor-de-datos-de-futbol-mx.firebaseapp.com",
+    databaseURL: "https://gestor-de-datos-de-futbol-mx.firebaseio.com",
+    projectId: "gestor-de-datos-de-futbol-mx",
+    storageBucket: "gestor-de-datos-de-futbol-mx.appspot.com",
+    messagingSenderId: "822170602705",
+    appId: "1:822170602705:web:30a2496937645f396649f0"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
 var db = firebase.firestore();
 
 //Login google
@@ -9,6 +21,17 @@ $('#loginG').click(function () {
         //  $('#root').append("<img src='"+result.user.photoURL+"'/>")
         //   $('#root').append("<img stc='"+)
         guardarDatos(result.user);
+    });
+})
+//Revisamos si ya se inició sesión
+$('#ingresar').click(function (){
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            window.location.href='iniciaSesion.html'
+        } else {
+            // User is signed out.
+            // ...
+        }
     });
 })
 
@@ -40,8 +63,8 @@ $('#login').click(function () {
 
 // Registro correo
 $('#reg').click(function () {
-    const email = document.getElementById("signup-email").value;
-    const password = document.getElementById("signup-password").value;
+    const email = document.getElementById("reg-email").value;
+    const password = document.getElementById("reg-password").value;
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function (result) {
             var usuario = {
@@ -51,8 +74,10 @@ $('#reg').click(function () {
                 img: "https://graph.facebook.com/3498960506864413/picture",
             }
             db.collection("users").doc(result.user.uid).set(usuario)
+            alert("Se ha registrado correctamente.");
         })
         .catch(function (error) {
+            alert(error.message);
             console.error(error)
         });
 })
